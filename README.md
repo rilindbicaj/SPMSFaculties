@@ -1,0 +1,2 @@
+# SPMSFaculties
+Faculty Management microservice
