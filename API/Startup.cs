@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Faculties;
 using Application.Levels;
 using MediatR;
@@ -42,6 +43,7 @@ namespace API
             });
             
              services.AddMediatR(typeof(ListFaculties.Handler).Assembly);
+             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
         }
 

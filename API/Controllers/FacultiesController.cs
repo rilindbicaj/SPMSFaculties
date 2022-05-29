@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Domain;
 using Application.Faculties;
 using Microsoft.AspNetCore.Authorization;
-
+using Application.DTOs;
 
 namespace API.Controllers
 {
@@ -13,23 +13,16 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class FacultiesController :  ControllerBase
+    public class FacultiesController :  BaseController
     {
-        private readonly IMediator _mediator;
-
-        public FacultiesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpGet]
-        public async Task<ActionResult<List<Faculty>>> List()
+        public async Task<ActionResult<List<FacultyDto>>> List()
         {
             return await _mediator.Send(new ListFaculties.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Faculty>> Details (int id)
+        public async Task<ActionResult<FacultyDto>> Details (int id)
         {
             return await _mediator.Send(new Details.Query{FacultyID = id});
         }
@@ -43,7 +36,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
         {
-            command.FacultyID = id;
+            command.Faculty.FacultyID = id;
             return await _mediator.Send(command);
         }
 

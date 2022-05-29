@@ -5,6 +5,7 @@ using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Application.DTOs;
 
 namespace API.Controllers
 {
@@ -12,21 +13,15 @@ namespace API.Controllers
     [ApiController]
     public class MajorsController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public MajorsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
 
         [HttpGet]
-        public async Task<ActionResult<List<Major>>> List()
+        public async Task<ActionResult<List<MajorDto>>> List()
         {
             return await _mediator.Send(new ListMajors.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Major>> Details (int id)
+        public async Task<ActionResult<MajorDto>> Details (int id)
         {
             return await _mediator.Send(new Details.Query{MajorID = id});
         }
@@ -40,7 +35,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
         {
-            command.MajorID = id;
+            command.Major.MajorID = id;
             return await _mediator.Send(command);
         }
 

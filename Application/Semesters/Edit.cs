@@ -5,6 +5,7 @@ using Persistence;
 using System;
 using Domain;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.Semesters
 {
@@ -12,30 +13,28 @@ namespace Application.Semesters
     {
         public class Command : IRequest
         {
-       public int SemesterID {get; set;}
-        public string SemesterName {get; set;}
-        public virtual ICollection<FacultySemester> FacultySemesters { get; set; }
+        public Semester Semester {get; set;}
+    
         }
         
         public class Handler : IRequestHandler<Command>
-        {
-            private readonly FacultyDBContext _context;
-        
-            public Handler(FacultyDBContext context)
+        {private readonly FacultyDBContext _context;
+            private readonly IMapper _mapper;
+
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
         
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var semester = await _context.Semesters.FindAsync(request.SemesterID);
+                var semester = await _context.Semesters.FindAsync(request.Semester.SemesterID);
 
                 if(semester == null)
                     throw new Exception ("Could not find semesters");
 
-                semester.SemesterID = request.SemesterID;   // To be corrected
-                semester.FacultySemesters = request.FacultySemesters ?? semester.FacultySemesters;
-                semester.SemesterName = request.SemesterName ?? semester.SemesterName;
+               _mapper.Map(request.Semester, semester);
                 
 
                 var success = await _context.SaveChangesAsync() > 0;

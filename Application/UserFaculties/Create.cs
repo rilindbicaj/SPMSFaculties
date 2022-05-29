@@ -5,6 +5,7 @@ using Persistence;
 using Domain;
 using System;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.UserFaculties
 {
@@ -12,30 +13,25 @@ namespace Application.UserFaculties
     {
         public class Command : IRequest
         {
-        public Guid UserID { get; set; }
-        public int FacultyID { get; set; }
-
-        public Faculty Faculty { get; set;}
+        public UserFaculty UserFaculty { get; set; }
         
         }
         public class Handler : IRequestHandler<Command>
         {
             private readonly FacultyDBContext _context;
+            private readonly IMapper _mapper;
 
-            public Handler(FacultyDBContext context)
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var userfaculty = new UserFaculty
-                {
-                    UserID = request.UserID,
-                    FacultyID = request.FacultyID,
-                    Faculty = request.Faculty,
+               var userfaculty = await _context.UserFaculties.FindAsync(request.UserFaculty);
 
-                };
+                 _mapper.Map(request.UserFaculty, userfaculty);
 
                 _context.UserFaculties.Add(userfaculty);
                 var success = await _context.SaveChangesAsync() > 0;

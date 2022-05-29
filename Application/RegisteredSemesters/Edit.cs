@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Persistence;
 using System;
 using Domain;
-using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.RegisteredSemesters
 {
@@ -12,34 +12,28 @@ namespace Application.RegisteredSemesters
     {
         public class Command : IRequest
         {
-        public int RegistrationID { get; set; }
-        public int StudentID { get; set; }
-        public int RegisteringSeasonID { get; set; }
-        public DateTime DateRegistered { get; set; }
-        public SemesterRegisteringSeason SemesterRegisteringSeason { get; set; }
+        public RegisteredSemester RegisteredSemester { get; set; }
         }
         
         public class Handler : IRequestHandler<Command>
         {
             private readonly FacultyDBContext _context;
-        
-            public Handler(FacultyDBContext context)
+            private readonly IMapper _mapper;
+
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
         
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var registeredsemester = await _context.RegisteredSemesters.FindAsync(request.RegistrationID);
+                var registeredsemester = await _context.RegisteredSemesters.FindAsync(request.RegisteredSemester.RegistrationID);
 
                 if(registeredsemester == null)
                     throw new Exception ("Could not find registeredsemesters");
 
-                registeredsemester.StudentID = request.StudentID; // To be corrected
-                registeredsemester.RegisteringSeasonID = request.RegisteringSeasonID; // To be corrected
-                registeredsemester.DateRegistered = request.DateRegistered;  // To be corrected
-                registeredsemester.SemesterRegisteringSeason = request.SemesterRegisteringSeason ?? registeredsemester.SemesterRegisteringSeason;
-                
+                 _mapper.Map(request.RegisteredSemester, registeredsemester);
 
                 var success = await _context.SaveChangesAsync() > 0;
         

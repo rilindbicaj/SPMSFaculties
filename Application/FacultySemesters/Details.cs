@@ -1,6 +1,7 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.DTOs;
+using AutoMapper;
 using Domain;
 using MediatR;
 using Persistence;
@@ -9,25 +10,27 @@ namespace Application.FacultySemesters
 {
     public class Details
     {
-        public class Query : IRequest <FacultySemester>
+        public class Query : IRequest <FacultySemesterDto>
         {
             public int FacultyID {get; set;}
         }
 
-        public class Handler : IRequestHandler<Query, FacultySemester>
+        public class Handler : IRequestHandler<Query, FacultySemesterDto>
         {
-            private readonly FacultyDBContext _context;
+           private readonly FacultyDBContext _context;
+            private readonly IMapper _mapper;
 
-            public Handler(FacultyDBContext context)
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
-                _context = context;   
+                _context = context;
+                _mapper = mapper;
             }
 
-            public async Task<FacultySemester> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<FacultySemesterDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 var facultysemester = await _context.FacultySemesters.FindAsync(request.FacultyID);
-
-                return facultysemester;
+                var result =_mapper.Map<FacultySemesterDto>(facultysemester);
+                return result;
             }
         }
 

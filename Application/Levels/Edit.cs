@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Persistence;
 using System;
 using Domain;
-using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.Levels
 {
@@ -12,29 +12,28 @@ namespace Application.Levels
     {
         public class Command : IRequest
         {
-       public int LevelID {get; set;}
-        public string LevelName {get; set;}
-        public virtual ICollection<Faculty> Faculties { get; set; }
+            public Level Level { get; set; }
         }
         
         public class Handler : IRequestHandler<Command>
         {
-            private readonly FacultyDBContext _context;
-        
-            public Handler(FacultyDBContext context)
+           private readonly FacultyDBContext _context;
+            private readonly IMapper _mapper;
+
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
         
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var level = await _context.Levels.FindAsync(request.LevelID);
+                var level = await _context.Levels.FindAsync(request.Level.LevelID);
 
                 if(level == null)
                     throw new Exception ("Could not find levels");
 
-                level.Faculties = request.Faculties ?? level.Faculties;
-                level.LevelName = request.LevelName ?? level.LevelName;
+                      _mapper.Map(request.Level, level);
                 
 
                 var success = await _context.SaveChangesAsync() > 0;
@@ -43,6 +42,7 @@ namespace Application.Levels
         
                 throw new Exception ("Problem saving changes");
             }
+
         }
     }
 }

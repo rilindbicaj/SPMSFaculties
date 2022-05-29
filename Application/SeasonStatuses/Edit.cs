@@ -5,6 +5,7 @@ using Persistence;
 using System;
 using Domain;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.SeasonStatuses
 {
@@ -12,9 +13,7 @@ namespace Application.SeasonStatuses
     {
         public class Command : IRequest
         {
-        public int SeasonStatusID { get; set; }
-
-        public string Status { get; set; }
+        public SeasonStatus SeasonStatus { get; set; }
 
         public ICollection<SemesterRegisteringSeason> Seasons { get; set; }
         }
@@ -22,21 +21,22 @@ namespace Application.SeasonStatuses
         public class Handler : IRequestHandler<Command>
         {
             private readonly FacultyDBContext _context;
-        
-            public Handler(FacultyDBContext context)
+            private readonly IMapper _mapper;
+
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
         
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var seasonstatus = await _context.SeasonStatuses.FindAsync(request.SeasonStatusID);
+                var seasonstatus = await _context.SeasonStatuses.FindAsync(request.SeasonStatus.SeasonStatusID);
 
                 if(seasonstatus == null)
                     throw new Exception ("Could not find seasonstatuses");
 
-                seasonstatus.Status = request.Status ?? seasonstatus.Status;
-                seasonstatus.Seasons = request.Seasons ?? seasonstatus.Seasons;
+                    _mapper.Map(request.SeasonStatus, seasonstatus);
                 
 
                 var success = await _context.SaveChangesAsync() > 0;

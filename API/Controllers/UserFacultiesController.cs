@@ -6,7 +6,7 @@ using Domain;
 using Application.UserFaculties;
 using System; 
 using Microsoft.AspNetCore.Authorization;
-
+using Application.DTOs;
 
 namespace API.Controllers
 {
@@ -14,23 +14,17 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class UserFacultiesController :  ControllerBase
+    public class UserFacultiesController :  BaseController
     {
-        private readonly IMediator _mediator;
-
-        public UserFacultiesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
 
         [HttpGet]
-        public async Task<ActionResult<List<UserFaculty>>> List()
+        public async Task<ActionResult<List<UserFacultyDto>>> List()
         {
             return await _mediator.Send(new ListUserFaculties.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserFaculty>> Details (Guid id)
+        public async Task<ActionResult<UserFacultyDto>> Details (Guid id)
         {
             return await _mediator.Send(new Details.Query{UserID = id});
         }
@@ -44,7 +38,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Unit>> Edit(Guid id, Edit.Command command)
         {
-            command.UserID = id;
+            command.UserFaculty.UserID = id;
             return await _mediator.Send(command);
         }
 

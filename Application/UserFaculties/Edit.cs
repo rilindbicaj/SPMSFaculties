@@ -5,6 +5,7 @@ using Persistence;
 using System;
 using Domain;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.UserFaculties
 {
@@ -12,30 +13,29 @@ namespace Application.UserFaculties
     {
         public class Command : IRequest
         {
-        public Guid UserID { get; set; }
-        public int FacultyID { get; set; }
+        public UserFaculty UserFaculty { get; set; }
 
-        public Faculty Faculty { get; set;}
         }
         
         public class Handler : IRequestHandler<Command>
         {
             private readonly FacultyDBContext _context;
-        
-            public Handler(FacultyDBContext context)
+            private readonly IMapper _mapper;
+
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
         
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var userfaculty = await _context.UserFaculties.FindAsync(request.UserID);
+                var userfaculty = await _context.UserFaculties.FindAsync(request.UserFaculty.UserID);
 
                 if(userfaculty == null)
                     throw new Exception ("Could not find userfaculties");
 
-                userfaculty.FacultyID = request.FacultyID; // Operator '??' cannot be applied to operands of type 'int' and 'int'
-                userfaculty.Faculty = request.Faculty ?? userfaculty.Faculty;
+                _mapper.Map(request.UserFaculty, userfaculty);
                 
 
                 var success = await _context.SaveChangesAsync() > 0;

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Persistence;
 using Domain;
 using System;
-using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.FacultySemesters
 {
@@ -12,33 +12,25 @@ namespace Application.FacultySemesters
     {
         public class Command : IRequest
         {
-        public int FacultyID {get; set;}
-        public int SemesterID {get; set;}
-        public virtual Faculty Faculty { get; set; }
-        public virtual Semester Semester { get; set; }
-        public virtual ICollection<SemesterRegisteringSeason> RegisteringSeasons { get; set; }
+        public FacultySemester FacultySemester { get; set; } 
 
         }
 
         public class Handler : IRequestHandler<Command>
         {
             private readonly FacultyDBContext _context;
+             private readonly IMapper _mapper;
 
-            public Handler(FacultyDBContext context)
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
-
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var facultysemester = new FacultySemester
-                {
-                    FacultyID = request.FacultyID,
-                    SemesterID = request.SemesterID,
-                    Faculty = request.Faculty,
-                    Semester = request.Semester,
-                    RegisteringSeasons = request.RegisteringSeasons,
-                };
+                var facultysemester = await _context.FacultySemesters.FindAsync(request.FacultySemester);
+
+               _mapper.Map(request.FacultySemester, facultysemester);
 
                 _context.FacultySemesters.Add(facultysemester);
                 var success = await _context.SaveChangesAsync() > 0;

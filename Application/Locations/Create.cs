@@ -5,6 +5,7 @@ using Persistence;
 using Domain;
 using System;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.Locations
 {
@@ -12,28 +13,27 @@ namespace Application.Locations
     {
         public class Command : IRequest
         {
-        public int LocationID {get; set;}
-        public string LocationName {get; set;}
+        public Location Location { get; set; }
 
         }
 
         public class Handler : IRequestHandler<Command>
         {
             private readonly FacultyDBContext _context;
+             private readonly IMapper _mapper;
 
-            public Handler(FacultyDBContext context)
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
+
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var location = new Location
-                {
-                    LocationID = request.LocationID,
-                    LocationName = request.LocationName,
+                var location = await _context.Locations.FindAsync(request.Location);
 
-                };
+               _mapper.Map(request.Location, location);
 
                 _context.Locations.Add(location);
                 var success = await _context.SaveChangesAsync() > 0;

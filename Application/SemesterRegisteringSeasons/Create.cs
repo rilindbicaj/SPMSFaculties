@@ -5,6 +5,7 @@ using Persistence;
 using Domain;
 using System;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.SemesterRegisteringSeasons
 {
@@ -12,45 +13,26 @@ namespace Application.SemesterRegisteringSeasons
     {
         public class Command : IRequest
         {
-        public int SemesterRegisteringSeasonID { get; set; }
-        public string RegisteringSeasonName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public int CurrentStatus { get; set; }
-        public int Faculty { get; set; }
-        public int Semester { get; set; }
-
-        public FacultySemester FacultySemester { get; set; }
-        public ICollection<RegisteredSemester> RegisteredSemesters { get; set; }
-        public SeasonStatus SeasonStatus { get; set; }
-
+        public SemesterRegisteringSeason SemesterRegisteringSeason { get; set; }
 
         }
 
         public class Handler : IRequestHandler<Command>
         {
             private readonly FacultyDBContext _context;
+             private readonly IMapper _mapper;
 
-            public Handler(FacultyDBContext context)
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var semesterRegisteringSeason = new SemesterRegisteringSeason
-                {
-                    SemesterRegisteringSeasonID = request.SemesterRegisteringSeasonID,
-                    RegisteringSeasonName = request.RegisteringSeasonName,
-                    StartDate = request.StartDate,
-                    EndDate = request.EndDate,
-                    CurrentStatus = request.CurrentStatus,
-                    Faculty = request.Faculty,
-                    Semester = request.Semester,
-                    FacultySemester = request.FacultySemester,
-                    RegisteredSemesters = request.RegisteredSemesters,
-                    SeasonStatus = request.SeasonStatus,
-                };
+                var semesterRegisteringSeason = await _context.SemesterRegisteringSeasons.FindAsync(request.SemesterRegisteringSeason);
+
+               _mapper.Map(request.SemesterRegisteringSeason, semesterRegisteringSeason);
 
                 _context.SemesterRegisteringSeasons.Add(semesterRegisteringSeason);
                 var success = await _context.SaveChangesAsync() > 0;

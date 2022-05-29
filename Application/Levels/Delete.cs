@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Persistence;
 using System;
+using AutoMapper;
 
 namespace Application.Levels
 {
@@ -15,11 +16,13 @@ namespace Application.Levels
 
         public class Handler : IRequestHandler<Command>
         {
-            private readonly FacultyDBContext _context;
+           private readonly FacultyDBContext _context;
+            private readonly IMapper _mapper;
 
-            public Handler(FacultyDBContext context)
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)

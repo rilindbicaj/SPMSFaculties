@@ -5,6 +5,7 @@ using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Application.DTOs;
 
 namespace API.Controllers
 {
@@ -12,21 +13,15 @@ namespace API.Controllers
     [ApiController]
     public class LocationsController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public LocationsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
 
         [HttpGet]
-        public async Task<ActionResult<List<Location>>> List()
+        public async Task<ActionResult<List<LocationDto>>> List()
         {
             return await _mediator.Send(new ListLocations.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Location>> Details (int id)
+        public async Task<ActionResult<LocationDto>> Details (int id)
         {
             return await _mediator.Send(new Details.Query{LocationID = id});
         }
@@ -40,7 +35,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
         {
-            command.LocationID = id;
+            command.Location.LocationID = id;
             return await _mediator.Send(command);
         }
 

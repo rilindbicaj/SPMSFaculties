@@ -5,7 +5,7 @@ using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-
+using Application.DTOs;
 
 namespace API.Controllers
 {
@@ -13,21 +13,14 @@ namespace API.Controllers
     [ApiController]
     public class SemesterRegisteringSeasonsController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public SemesterRegisteringSeasonsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpGet]
-        public async Task<ActionResult<List<SemesterRegisteringSeason>>> List()
+        public async Task<ActionResult<List<SemesterRegisteringSeasonDto>>> List()
         {
             return await _mediator.Send(new ListSemesterRegisteringSeasons.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<SemesterRegisteringSeason>> Details (int id)
+        public async Task<ActionResult<SemesterRegisteringSeasonDto>> Details (int id)
         {
             return await _mediator.Send(new Details.Query{SemesterRegisteringSeasonID = id});
         }
@@ -41,7 +34,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
         {
-            command.SemesterRegisteringSeasonID = id;
+            command.SemesterRegisteringSeason.SemesterRegisteringSeasonID = id;
             return await _mediator.Send(command);
         }
 

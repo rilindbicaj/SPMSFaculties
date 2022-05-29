@@ -5,6 +5,7 @@ using Persistence;
 using Domain;
 using System;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace Application.Levels
 {
@@ -12,31 +13,25 @@ namespace Application.Levels
     {
         public class Command : IRequest
         {
-        public int LevelID {get; set;}
-        public string LevelName {get; set;}
-        public virtual ICollection<Faculty> Faculties { get; set; }
-
+        public Level Level { get; set; }
 
         }
 
         public class Handler : IRequestHandler<Command>
         {
-            private readonly FacultyDBContext _context;
+           private readonly FacultyDBContext _context;
+            private readonly IMapper _mapper;
 
-            public Handler(FacultyDBContext context)
+            public Handler(FacultyDBContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
-
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var level = new Level
-                {
-                    LevelID = request.LevelID,
-                    LevelName = request.LevelName,
-                    Faculties = request.Faculties,
+                 var level = await _context.Levels.FindAsync(request.Level);
 
-                };
+                 _mapper.Map(request.Level, level);
 
                 _context.Levels.Add(level);
                 var success = await _context.SaveChangesAsync() > 0;

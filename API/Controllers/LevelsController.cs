@@ -5,7 +5,7 @@ using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-
+using Application.DTOs;
 
 namespace API.Controllers
 {
@@ -13,21 +13,15 @@ namespace API.Controllers
     [ApiController]
     public class LevelsController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public LevelsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
 
         [HttpGet]
-        public async Task<ActionResult<List<Level>>> List()
+        public async Task<ActionResult<List<LevelDto>>> List()
         {
             return await _mediator.Send(new ListLevels.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Level>> Details (int id)
+        public async Task<ActionResult<LevelDto>> Details (int id)
         {
             return await _mediator.Send(new Details.Query{LevelID = id});
         }
@@ -41,7 +35,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
         {
-            command.LevelID = id;
+            command.Level.LevelID = id;
             return await _mediator.Send(command);
         }
 
