@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.DTOs;
 using Application.Levels;
 using Domain;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -17,32 +17,32 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<LevelDto>>> List()
         {
-            return await _mediator.Send(new ListLevels.Query());
+            return await Mediator.Send(new ListLevels.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<LevelDto>> Details (int id)
+        public async Task<ActionResult<LevelDto>> Details(int id)
         {
-            return await _mediator.Send(new Details.Query{LevelID = id});
+            return await Mediator.Send(new Details.Query { LevelID = id });
         }
-        
+
         [HttpPost]
-        public async Task<ActionResult<Unit>> Create(Create.Command command)
+        public async Task<ActionResult<Unit>> Create(Level level)
         {
-            return await _mediator.Send(command);
+            return await Mediator.Send(new Create.Command { Level = level });
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
+        public async Task<ActionResult<Unit>> Edit(int id, Level level)
         {
-            command.Level.LevelID = id;
-            return await _mediator.Send(command);
+            //command.Level.LevelID = id;
+            return await Mediator.Send(new Edit.Command { Level = level });
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Unit>> Delete(int id)
         {
-            return await _mediator.Send(new Delete.Command{LevelID = id});
+            return await Mediator.Send(new Delete.Command { LevelID = id });
         }
     }
 }

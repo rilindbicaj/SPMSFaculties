@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.DTOs;
 using Application.RegisteredSemesters;
 using Domain;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -16,32 +16,32 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<RegisteredSemesterDto>>> List()
         {
-            return await _mediator.Send(new ListRegisteredSemesters.Query());
+            return await Mediator.Send(new ListRegisteredSemesters.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RegisteredSemesterDto>> Details (int id)
+        public async Task<ActionResult<RegisteredSemesterDto>> Details(int id)
         {
-            return await _mediator.Send(new Details.Query{RegistrationID = id});
+            return await Mediator.Send(new Details.Query { RegistrationID = id });
         }
-        
+
         [HttpPost]
-        public async Task<ActionResult<Unit>> Create(Create.Command command)
+        public async Task<ActionResult<Unit>> Create(RegisteredSemester registeredSemester)
         {
-            return await _mediator.Send(command);
+            return await Mediator.Send(new Create.Command { RegisteredSemester = registeredSemester });
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
+        public async Task<ActionResult<Unit>> Edit(int id, RegisteredSemester registeredSemester)
         {
-            command.RegisteredSemester.RegistrationID = id;
-            return await _mediator.Send(command);
+            //command.RegisteredSemester.RegistrationID = id;
+            return await Mediator.Send(new Edit.Command { RegisteredSemester = registeredSemester });
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Unit>> Delete(int id)
         {
-            return await _mediator.Send(new Delete.Command{RegistrationID = id});
+            return await Mediator.Send(new Delete.Command { RegistrationID = id });
         }
     }
 }

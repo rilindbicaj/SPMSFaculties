@@ -1,51 +1,50 @@
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using System;
 using System.Collections.Generic;
-using Domain;
-using Application.UserFaculties;
-using System; 
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 using Application.DTOs;
+using Application.UserFaculties;
+using Domain;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
 
-    public class UserFacultiesController :  BaseController
+    public class UserFacultiesController : BaseController
     {
 
         [HttpGet]
         public async Task<ActionResult<List<UserFacultyDto>>> List()
         {
-            return await _mediator.Send(new ListUserFaculties.Query());
+            return await Mediator.Send(new ListUserFaculties.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserFacultyDto>> Details (Guid id)
+        public async Task<ActionResult<UserFacultyDto>> Details(Guid id)
         {
-            return await _mediator.Send(new Details.Query{UserID = id});
+            return await Mediator.Send(new Details.Query { UserID = id });
         }
 
         [HttpPost]
-        public async Task<ActionResult<Unit>> Create(Create.Command command)
+        public async Task<ActionResult<Unit>> Create(UserFaculty userFaculty)
         {
-            return await _mediator.Send(command);
+            return await Mediator.Send(new Create.Command { UserFaculty = userFaculty });
         }
-        
+
         [HttpPut("{id}")]
-        public async Task<ActionResult<Unit>> Edit(Guid id, Edit.Command command)
+        public async Task<ActionResult<Unit>> Edit(Guid id, UserFaculty userFaculty)
         {
-            command.UserFaculty.UserID = id;
-            return await _mediator.Send(command);
+            //command.UserFaculty.UserID = id;
+            return await Mediator.Send(new Edit.Command { UserFaculty = userFaculty });
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Unit>> Delete(Guid id)
         {
-            return await _mediator.Send(new Delete.Command{UserID = id});
+            return await Mediator.Send(new Delete.Command { UserID = id });
         }
     }
 }

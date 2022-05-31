@@ -41,9 +41,24 @@ namespace API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
-            
-             services.AddMediatR(typeof(ListFaculties.Handler).Assembly);
-             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+            services.AddMediatR(typeof(ListFaculties.Query).Assembly);
+            services.AddMediatR(typeof(ListFacultiesForUser.Handler).Assembly);
+            services.AddMediatR(typeof(ListFacultiesForUser.Handler).Assembly);
+
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+            services.AddCors(opt =>
+           {
+               opt.AddPolicy("CorsPolicy", policy =>
+               {
+                   policy.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().AllowCredentials().WithOrigins("http://localhost:3000");
+               });
+           });
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+           options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 
         }
 
@@ -58,6 +73,8 @@ namespace API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
 
             app.UseRouting();
 
