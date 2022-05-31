@@ -32,25 +32,12 @@ namespace Application.Faculties
 
             public async Task<List<FlatFacultyDTO>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var faculties = await _context.Faculties
-                .Select(f => new Faculty
-                {
-                    FacultyID = f.FacultyID,
-                    FacultyName = f.FacultyName,
-                    MajorID = f.MajorID,
-                    LevelID = f.LevelID,
-                    Major = f.Major,
-                    Level = f.Level,
-                    FacultySemesters = f.FacultySemesters
-                        .Select(fs => new FacultySemester
-                        {
-                            FacultyID = fs.FacultyID,
-                            SemesterID = fs.SemesterID,
-                            Semester = new Semester { SemesterID = fs.Semester.SemesterID, SemesterName = fs.Semester.SemesterName }
-                        }).ToList()
-                })
-                .ToListAsync();
 
+                //Can't seem to make it work without falling back to querying with SQL
+
+                string query = $"select f.facultyid, f.facultyname, f.levelid, f.majorid from faculties as f join userfaculties as uf on f.FacultyID = uf.facultyid where uf.userid = '{request.UserID.ToString()}'";
+
+                var faculties = _context.Faculties.FromSqlRaw(query).ToList();
                 var result = _mapper.Map<List<FlatFacultyDTO>>(faculties);
 
                 return result;

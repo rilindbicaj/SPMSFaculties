@@ -11,7 +11,6 @@ namespace Application.DTOs
         public int LevelID { get; set; }
         public string Major { get; set; }
         public string Level { get; set; }
-        public ICollection<Semester> Semesters { get; set; }
 
     }
 }

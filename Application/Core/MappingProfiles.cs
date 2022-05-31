@@ -45,16 +45,16 @@ namespace Application.Core
 
             CreateMap<Faculty, FlatFacultyDTO>()
             .ForMember(dest => dest.Major, opt => opt.MapFrom(src => src.Major.MajorName))
-            .ForMember(dest => dest.Level, opt => opt.MapFrom(src => src.Level.LevelName))
-            .AfterMap((src, dest, rc) =>
-            {
-                var list = new List<Semester>();
-                foreach (var fs in src.FacultySemesters)
-                {
-                    list.Add(fs.Semester);
-                }
-                dest.Semesters = list;
-            });
+            .ForMember(dest => dest.Level, opt => opt.MapFrom(src => src.Level.LevelName));
+            // .AfterMap((src, dest, rc) =>
+            // {
+            //     var list = new List<Semester>();
+            //     foreach (var fs in src.FacultySemesters)
+            //     {
+            //         list.Add(fs.Semester);
+            //     }
+            //     dest.Semesters = list;
+            // });
 
         }
     }

@@ -16,7 +16,7 @@ namespace API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<List<FacultySemester>>> List()
+        public async Task<ActionResult<List<FacultySemesterDto>>> List()
         {
             return await Mediator.Send(new ListFacultySemesters.Query());
         }
