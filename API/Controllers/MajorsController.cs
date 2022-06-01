@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.DTOs;
 using Application.Majors;
 using Domain;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -17,32 +17,32 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<MajorDto>>> List()
         {
-            return await _mediator.Send(new ListMajors.Query());
+            return await Mediator.Send(new ListMajors.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MajorDto>> Details (int id)
+        public async Task<ActionResult<MajorDto>> Details(int id)
         {
-            return await _mediator.Send(new Details.Query{MajorID = id});
+            return await Mediator.Send(new Details.Query { MajorID = id });
         }
-        
+
         [HttpPost]
-        public async Task<ActionResult<Unit>> Create(Create.Command command)
+        public async Task<ActionResult<Unit>> Create(Major major)
         {
-            return await _mediator.Send(command);
+            return await Mediator.Send(new Create.Command { Major = major });
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
+        public async Task<ActionResult<Unit>> Edit(int id, Major major)
         {
-            command.Major.MajorID = id;
-            return await _mediator.Send(command);
+            //command.Major.MajorID = id;
+            return await Mediator.Send(new Edit.Command { Major = major });
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Unit>> Delete(int id)
         {
-            return await _mediator.Send(new Delete.Command{MajorID = id});
+            return await Mediator.Send(new Delete.Command { MajorID = id });
         }
     }
 }

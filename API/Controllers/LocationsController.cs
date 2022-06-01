@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.DTOs;
 using Application.Locations;
 using Domain;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -17,32 +17,32 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<LocationDto>>> List()
         {
-            return await _mediator.Send(new ListLocations.Query());
+            return await Mediator.Send(new ListLocations.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<LocationDto>> Details (int id)
+        public async Task<ActionResult<LocationDto>> Details(int id)
         {
-            return await _mediator.Send(new Details.Query{LocationID = id});
+            return await Mediator.Send(new Details.Query { LocationID = id });
         }
-        
+
         [HttpPost]
-        public async Task<ActionResult<Unit>> Create(Create.Command command)
+        public async Task<ActionResult<Unit>> Create(Location location)
         {
-            return await _mediator.Send(command);
+            return await Mediator.Send(new Create.Command { Location = location });
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
+        public async Task<ActionResult<Unit>> Edit(int id, Location location)
         {
-            command.Location.LocationID = id;
-            return await _mediator.Send(command);
+            //command.Location.LocationID = id;
+            return await Mediator.Send(new Edit.Command { Location = location });
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Unit>> Delete(int id)
         {
-            return await _mediator.Send(new Delete.Command{LocationID = id});
+            return await Mediator.Send(new Delete.Command { LocationID = id });
         }
     }
 }

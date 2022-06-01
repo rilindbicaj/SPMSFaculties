@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.DTOs;
 using Application.SemesterRegisteringSeasons;
 using Domain;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -16,32 +16,32 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<SemesterRegisteringSeasonDto>>> List()
         {
-            return await _mediator.Send(new ListSemesterRegisteringSeasons.Query());
+            return await Mediator.Send(new ListSemesterRegisteringSeasons.Query());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<SemesterRegisteringSeasonDto>> Details (int id)
+        public async Task<ActionResult<SemesterRegisteringSeasonDto>> Details(int id)
         {
-            return await _mediator.Send(new Details.Query{SemesterRegisteringSeasonID = id});
+            return await Mediator.Send(new Details.Query { SemesterRegisteringSeasonID = id });
         }
-        
+
         [HttpPost]
-        public async Task<ActionResult<Unit>> Create(Create.Command command)
+        public async Task<ActionResult<Unit>> Create(SemesterRegisteringSeason semesterRegisteringSeason)
         {
-            return await _mediator.Send(command);
+            return await Mediator.Send(new Create.Command { SemesterRegisteringSeason = semesterRegisteringSeason });
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Unit>> Edit(int id, Edit.Command command)
+        public async Task<ActionResult<Unit>> Edit(int id, SemesterRegisteringSeason semesterRegisteringSeason)
         {
-            command.SemesterRegisteringSeason.SemesterRegisteringSeasonID = id;
-            return await _mediator.Send(command);
+            //command.SemesterRegisteringSeason.SemesterRegisteringSeasonID = id;
+            return await Mediator.Send(new Edit.Command { SemesterRegisteringSeason = semesterRegisteringSeason });
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Unit>> Delete(int id)
         {
-            return await _mediator.Send(new Delete.Command{SemesterRegisteringSeasonID = id});
+            return await Mediator.Send(new Delete.Command { SemesterRegisteringSeasonID = id });
         }
     }
 }
