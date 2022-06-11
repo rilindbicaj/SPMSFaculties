@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Core;
 using Application.Faculties;
 using Application.Levels;
+using Application.Queries.BusSchedules;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using Persistence;
 
 namespace API
@@ -42,11 +44,18 @@ namespace API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
 
+            services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
             services.AddMediatR(typeof(ListFaculties.Query).Assembly);
             services.AddMediatR(typeof(ListFacultiesForUser.Handler).Assembly);
-            services.AddMediatR(typeof(ListFacultiesForUser.Handler).Assembly);
+            services.AddMediatR(typeof(GetAllBusSchedules.Handler).Assembly);
+            services.AddMediatR(typeof(UpdateBusScheduleInformation.Handler).Assembly);
+            services.AddMediatR(typeof(UpdateBusScheduleSlots.Handler).Assembly);
+
+            services.AddSingleton<MongoDbContext>();
 
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
+            //services.AddSingleton<MongoClientBase>();
 
             services.AddCors(opt =>
            {

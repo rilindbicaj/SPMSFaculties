@@ -1,8 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Application.DTOs;
+using Application.Requests;
+using Application.Responses;
 using AutoMapper;
+using AutoMapper.Internal;
 using Domain;
+using Microsoft.Data.SqlClient;
+using MongoDB.Bson;
 
 
 namespace Application.Core
@@ -22,9 +28,17 @@ namespace Application.Core
             CreateMap<Level, LevelDto>();
             CreateMap<Level, Level>();
 
-            CreateMap<Location, LocationDto>();
-            CreateMap<Location, Location>();
+            CreateMap<LocationUpdateRequest, Location>();
 
+            CreateMap<BusScheduleSlotCreateRequest, BusScheduleSlot>().AfterMap((src, dest, rc) =>
+            {
+                dest.SlotId ??= ObjectId.GenerateNewId();
+            });
+
+            CreateMap<BusScheduleInformationUpdateRequest, BusSchedule>();
+            CreateMap<BusScheduleSlotsUpdateRequest, BusSchedule>();
+            CreateMap<BusScheduleCreateRequest, BusSchedule>();
+            
             CreateMap<Major, MajorDto>();
             CreateMap<Major, Major>();
 
@@ -43,18 +57,16 @@ namespace Application.Core
             CreateMap<UserFaculty, UserFacultyDto>();
             CreateMap<UserFaculty, UserFaculty>();
 
+            CreateMap<Location, LocationResponse>();
+
+            CreateMap<Location, BusScheduleResponse>()
+                .ForMember(dest => dest.BusScheduleID, opt => opt.MapFrom(src => src.LocationId))
+                .AfterMap((dest, src, rc) => rc.Mapper.Map(dest.BusSchedule, src));
+            CreateMap<BusSchedule, BusScheduleResponse>();
+
             CreateMap<Faculty, FlatFacultyDTO>()
             .ForMember(dest => dest.Major, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(dest => dest.Level, opt => opt.MapFrom(src => src.Level.LevelName));
-            // .AfterMap((src, dest, rc) =>
-            // {
-            //     var list = new List<Semester>();
-            //     foreach (var fs in src.FacultySemesters)
-            //     {
-            //         list.Add(fs.Semester);
-            //     }
-            //     dest.Semesters = list;
-            // });
 
         }
     }

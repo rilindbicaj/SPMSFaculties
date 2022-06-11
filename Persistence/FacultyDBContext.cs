@@ -12,12 +12,11 @@ namespace Persistence
         public DbSet<Major> Majors { get; set; }
         public DbSet<Level> Levels { get; set; }
         public DbSet<Semester> Semesters { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        //public DbSet<Location> Locations { get; set; }
         public DbSet<SeasonStatus> SeasonStatuses { get; set; }
         public DbSet<RegisteredSemester> RegisteredSemesters { get; set; }
         public DbSet<FacultySemester> FacultySemesters { get; set; }
         public DbSet<SemesterRegisteringSeason> SemesterRegisteringSeasons { get; set; }
-
         public DbSet<UserFaculty> UserFaculties { get; set; }
         public FacultyDBContext(DbContextOptions<FacultyDBContext> opt) : base(opt)
         {
@@ -75,10 +74,10 @@ namespace Persistence
 
             });
 
-            builder.Entity<Location>(entity =>
-            {
-                entity.HasKey(lo => lo.LocationID);
-            });
+            // builder.Entity<Location>(entity =>
+            // {
+            //     entity.HasKey(lo => lo.LocationID);
+            // });
 
             builder.Entity<SeasonStatus>(entity =>
             {
