@@ -1,18 +1,18 @@
-using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Persistence;
-using System;
 using AutoMapper;
-using Application.DTOs;
+using Domain;
+using MediatR;
+using Persistence;
 
-namespace Application.Faculties
+namespace Application.Commands.Faculties
 {
-    public class Delete
+    public class Edit
     {
-        public class Command : IRequest 
+        public class Command : IRequest
         {
-            public int FacultyID {get; set;}
+            public Faculty Faculty { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -28,18 +28,19 @@ namespace Application.Faculties
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var faculty = await _context.Faculties.FindAsync(request.FacultyID);
+                var faculty = await _context.Faculties.FindAsync(request.Faculty.FacultyID);
 
-                if(faculty == null)
+                if (faculty == null)
                     throw new Exception("Could not find faculty");
 
-                _context.Remove(faculty);
+                _mapper.Map(request.Faculty, faculty);
+
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if(success) return Unit.Value;
+                if (success) return Unit.Value;
 
-                throw new Exception ("Problem saving changes");
+                throw new Exception("Problem saving changes");
             }
         }
     }

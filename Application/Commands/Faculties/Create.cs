@@ -1,26 +1,26 @@
-using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Persistence;
-using Domain;
-using System;
-using AutoMapper;
 using Application.DTOs;
+using AutoMapper;
+using Domain;
+using MediatR;
+using Persistence;
 
-namespace Application.Faculties
+namespace Application.Commands.Faculties
 {
     public class Create
     {
         public class Command : IRequest
         {
-            public Faculty Faculty { get; set; } 
+            public Faculty Faculty { get; set; }
 
         }
 
         public class Handler : IRequestHandler<Command>
         {
             private readonly FacultyDBContext _context;
-             private readonly IMapper _mapper;
+            private readonly IMapper _mapper;
 
             public Handler(FacultyDBContext context, IMapper mapper)
             {
@@ -30,16 +30,16 @@ namespace Application.Faculties
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-               var faculty = await _context.Faculties.FindAsync(request.Faculty);
+                var faculty = await _context.Faculties.FindAsync(request.Faculty);
 
-               _mapper.Map(request.Faculty, faculty);
+                _mapper.Map(request.Faculty, faculty);
 
                 _context.Faculties.Add(faculty);
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if(success) return Unit.Value;
+                if (success) return Unit.Value;
 
-                throw new Exception ("Problem saving changes");
+                throw new Exception("Problem saving changes");
             }
         }
     }

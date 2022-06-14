@@ -6,13 +6,13 @@ using Domain;
 using MediatR;
 using Persistence;
 
-namespace Application.Faculties
+namespace Application.Commands.Faculties
 {
     public class Details
     {
-        public class Query : IRequest <FacultyDto>
+        public class Query : IRequest<FacultyDto>
         {
-            public int FacultyID {get; set;}
+            public int FacultyID { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, FacultyDto>
@@ -29,7 +29,7 @@ namespace Application.Faculties
             public async Task<FacultyDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 var faculty = await _context.Faculties.FindAsync(request.FacultyID);
-                var result =_mapper.Map<FacultyDto>(faculty);
+                var result = _mapper.Map<FacultyDto>(faculty);
 
                 return result;
             }

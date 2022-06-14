@@ -7,11 +7,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Application.Faculties
+namespace Application.Commands.Faculties
 {
     public class ListFaculties
     {
-        public class Query : IRequest<List<FacultyDto>> {}
+        public class Query : IRequest<List<FacultyDto>> { }
 
         public class Handler : IRequestHandler<Query, List<FacultyDto>>
         {
@@ -24,10 +24,10 @@ namespace Application.Faculties
                 _mapper = mapper;
             }
 
-            public async Task<List<FacultyDto>> Handle (Query request, CancellationToken cancellationToken)
+            public async Task<List<FacultyDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var faculties = await _context.Faculties.ToListAsync();
-                var result =_mapper.Map<List<FacultyDto>>(faculties);
+                var result = _mapper.Map<List<FacultyDto>>(faculties);
 
                 return result;
             }

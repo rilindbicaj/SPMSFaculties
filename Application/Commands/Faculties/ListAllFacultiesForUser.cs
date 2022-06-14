@@ -10,9 +10,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Application.Faculties
+namespace Application.Commands.Faculties
 {
-    public class ListFacultiesForUser
+    public class ListAllFacultiesForUser
     {
         public class Query : IRequest<List<FlatFacultyDTO>>
         {
@@ -35,7 +35,7 @@ namespace Application.Faculties
 
                 //Can't seem to make it work without falling back to querying with SQL
 
-                string query = $"select f.facultyid, f.facultyname, f.levelid, f.majorid from faculties as f join userfaculties as uf on f.FacultyID = uf.facultyid where uf.userid = '{request.UserID.ToString()}'";
+                string query = $"select f.facultyid, f.facultyname, f.levelid, f.majorid from faculties as f join userfaculties as uf on f.FacultyID = uf.facultyid where uf.userid = '{request.UserID.ToString().ToUpper()}'";
 
                 var faculties = _context.Faculties.FromSqlRaw(query).ToList();
                 var result = _mapper.Map<List<FlatFacultyDTO>>(faculties);

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Commands.Faculties;
 using Application.DTOs;
-using Application.Faculties;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -21,10 +21,10 @@ namespace API.Controllers
             return await Mediator.Send(new ListFaculties.Query());
         }
 
-        [HttpGet("GetFacultiesForUser/{UserID}")]
-        public async Task<ActionResult<List<FlatFacultyDTO>>> GetFacultiesForUser(Guid UserID)
+        [HttpGet("GetFacultiesForUser/{userId}")]
+        public async Task<ActionResult<List<FlatFacultyDTO>>> GetFacultiesForUser(Guid userId)
         {
-            return await Mediator.Send(new ListFacultiesForUser.Query { UserID = UserID });
+            return await Mediator.Send(new ListAllFacultiesForUser.Query { UserID = userId });
         }
 
         [HttpGet("{id}")]
