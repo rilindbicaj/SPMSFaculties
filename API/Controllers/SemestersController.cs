@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTOs;
+using Application.Queries.Semesters;
 using Application.Semesters;
 using Domain;
 using MediatR;
@@ -43,6 +45,7 @@ namespace API.Controllers
         {
             return await Mediator.Send(new Delete.Command { SemesterID = id });
         }
+        
     }
 }
 

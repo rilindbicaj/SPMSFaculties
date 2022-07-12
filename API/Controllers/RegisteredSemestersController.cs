@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTOs;
+using Application.Queries.Semesters;
 using Application.RegisteredSemesters;
 using Domain;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -42,6 +43,16 @@ namespace API.Controllers
         public async Task<ActionResult<Unit>> Delete(int id)
         {
             return await Mediator.Send(new Delete.Command { RegistrationID = id });
+        }
+
+        [HttpGet("getRegisteredSemesterInFacultyForStudent/{studentId}/{facultyId}")]
+        public async Task<ActionResult<List<SemesterDto>>> GetSemestersForStudentInFaculty(Guid studentId, int facultyId)
+        {
+            return await Mediator.Send(new GetSemestersForStudentInFaculty.Query
+            {
+                UserId = studentId,
+                FacultyId =facultyId
+            });
         }
     }
 }

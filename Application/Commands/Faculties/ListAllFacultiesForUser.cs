@@ -32,12 +32,13 @@ namespace Application.Commands.Faculties
 
             public async Task<List<FlatFacultyDTO>> Handle(Query request, CancellationToken cancellationToken)
             {
-
-                //Can't seem to make it work without falling back to querying with SQL
-
-                string query = $"select f.facultyid, f.facultyname, f.levelid, f.majorid from faculties as f join userfaculties as uf on f.FacultyID = uf.facultyid where uf.userid = '{request.UserID.ToString().ToUpper()}'";
-
-                var faculties = _context.Faculties.FromSqlRaw(query).ToList();
+                
+                var faculties = _context.Faculties
+                    .Where(f => f.UserFaculties.Any(uf => uf.UserID.ToString() == request.UserID.ToString().ToUpper()))
+                    .Include(f => f.Major)
+                    .Include(f => f.Level)
+                    .Include(f => f.FacultySemesters)
+                    .ThenInclude(f => f.Semester);
                 var result = _mapper.Map<List<FlatFacultyDTO>>(faculties);
 
                 return result;

@@ -65,8 +65,9 @@ namespace Application.Core
             CreateMap<BusSchedule, BusScheduleResponse>();
 
             CreateMap<Faculty, FlatFacultyDTO>()
-            .ForMember(dest => dest.Major, opt => opt.MapFrom(src => src.Major.MajorName))
-            .ForMember(dest => dest.Level, opt => opt.MapFrom(src => src.Level.LevelName));
+                .ForMember(dest => dest.Major, opt => opt.MapFrom(src => src.Major))
+                .ForMember(dest => dest.Level, opt => opt.MapFrom(src => src.Level))
+                .ForMember(dest => dest.Semesters, opt => opt.MapFrom(src => src.FacultySemesters.Select(fs => fs.Semester)));
 
         }
     }

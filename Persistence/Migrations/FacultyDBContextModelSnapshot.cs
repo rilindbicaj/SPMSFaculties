@@ -103,8 +103,8 @@ namespace Persistence.Migrations
                     b.Property<int>("RegisteringSeasonID")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("Student")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("RegistrationID");
 

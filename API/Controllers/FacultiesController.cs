@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FacultyDto>> Details(int id)
+        public async Task<ActionResult<FlatFacultyDTO>> Details(int id)
         {
             return await Mediator.Send(new Details.Query { FacultyID = id });
         }

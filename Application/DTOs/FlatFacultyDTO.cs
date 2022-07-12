@@ -7,10 +7,9 @@ namespace Application.DTOs
     {
         public int FacultyID { get; set; }
         public string FacultyName { get; set; }
-        public int MajorID { get; set; }
-        public int LevelID { get; set; }
-        public string Major { get; set; }
-        public string Level { get; set; }
+        public MajorDto Major { get; set; }
+        public LevelDto Level { get; set; }
+        public ICollection<SemesterDto> Semesters { get; set; }
 
     }
 }
