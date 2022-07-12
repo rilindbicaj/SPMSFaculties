@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+
     public class RegisteredSemestersController : BaseController
     {
         [HttpGet]
@@ -51,7 +50,7 @@ namespace API.Controllers
             return await Mediator.Send(new GetSemestersForStudentInFaculty.Query
             {
                 UserId = studentId,
-                FacultyId =facultyId
+                FacultyId = facultyId
             });
         }
     }

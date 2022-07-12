@@ -12,9 +12,6 @@ using MongoDB.Driver;
 namespace API.Controllers
 {
 
-    [Route("api/[controller]")]
-    [ApiController]
-
     public class BusSchedulesController : BaseController
     {
 
@@ -26,9 +23,9 @@ namespace API.Controllers
             return await Mediator.Send(new GetAllBusSchedules.Query { });
 
         }
-        
+
         [HttpPost("{locationId}")]
-        
+
         public async Task<IActionResult> CreateBusSchedule(string locationId,
             BusScheduleCreateRequest busScheduleCreateRequest)
         {
@@ -37,7 +34,7 @@ namespace API.Controllers
                 BusScheduleCreateRequest = busScheduleCreateRequest,
                 LocationId = ObjectId.Parse(locationId)
             });
-            
+
             return Ok();
 
         }
@@ -55,9 +52,9 @@ namespace API.Controllers
             return Ok();
 
         }
-        
+
         [HttpPut("updateSlots/{locationId}")]
-        
+
         public async Task<IActionResult> UpdateBusScheduleSlots(string locationId,
             BusScheduleSlotsUpdateRequest busScheduleSlotsUpdateRequest)
         {
@@ -67,7 +64,7 @@ namespace API.Controllers
                 LocationId = ObjectId.Parse(locationId)
             });
             return Ok();
-        
+
         }
 
         [HttpDelete("{locationId}")]
